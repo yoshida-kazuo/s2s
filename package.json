@@ -11,8 +11,8 @@
     "@types/react": "^18.2.24",
     "@types/react-dom": "^18.2.8",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.1.0",
     "dotenv": "^16.3.1",
-    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
@@ -24,10 +24,9 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "prod": "node dist/server.js",
-    "dev": "nodemon --exec ts-node src/server.ts",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently \"vite\" \"ts-node src/server.ts\"",
+    "build": "vite build",
+    "serve": "vite preview"
   },
   "keywords": [],
   "author": "",

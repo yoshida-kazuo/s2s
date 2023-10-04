@@ -5,7 +5,7 @@ import session = require('express-session');
 // import { MemoryStore, Session, SessionData, Store } from "express-session";
 import path from 'path';
 import express from 'express';
-import expressLayouts from 'express-ejs-layouts';
+// import expressLayouts from 'express-ejs-layouts';
 import webRoutes from './routes/webRoutes';
 import apiRoutes from './routes/apiRoutes';
 
@@ -29,12 +29,11 @@ app.use(session({
         saveUninitialized: false,
         cookie: { maxAge: 60000 }
     }))
-    .use(expressLayouts);
+    .use(express.static('dist/client'));
 app.set('layout', 'layouts/default')
     .set('view engine', 'ejs')
     .set('views', path.join(__dirname, 'views'));
-app.use('/', webRoutes)
-    .use('/api', apiRoutes);
+app.use('/api', apiRoutes);
 app.listen(appPort, () => {
         console.log(`Server is running at ${appUrl}:${appPort}`);
     });
