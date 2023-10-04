@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { BaseRequest } from '../requests/BaseRequest';
 
 export abstract class BaseController {
     protected requestClass: any=null;
