@@ -1,8 +1,10 @@
 import express from 'express';
-import * as homeController from '../controllers/homeController'
+import { HomeController } from '../controllers/HomeController';
+import { requestMiddleware } from '../middleware/Request';
 
 const router = express.Router();
+const homeController = new HomeController;
 
-router.get('/', homeController.index);
+router.get('/', (req, res) => homeController.execute(req, res));
 
 export default router;

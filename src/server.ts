@@ -1,19 +1,22 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+import path from 'path';
 import express from 'express';
 import expressLayouts from 'express-ejs-layouts';
-import path from 'path';
-import dotenv from 'dotenv';
 import webRoutes from './routes/webRoutes';
 import apiRoutes from './routes/apiRoutes';
+import { requestMiddleware } from './middleware/Request';
 
-dotenv.config();
+export const appPath = path.resolve(__dirname, process.env.APP_PATH!);
 export const appName = process.env.APP_NAME;
-export const appPath = process.env.APP_PATH;
 export const appUrl = process.env.APP_URL;
 export const appPort = process.env.APP_PORT;
 
 const app = express();
 
-app.use(expressLayouts)
+app.use(requestMiddleware)
+    .use(expressLayouts)
     .set('layout', 'layouts/default')
     .set('view engine', 'ejs')
     .set('views', path.join(__dirname, 'views'))
