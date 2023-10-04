@@ -1,9 +1,11 @@
 import { BaseRequest } from './BaseRequest';
+import { body, query, ValidationChain } from 'express-validator';
 
 export class HomeRequest extends BaseRequest {
-    //
-    
-    public validate(): boolean {
-        return true;
+
+    public rules(): ValidationChain[] {
+        return [
+        ];
     }
+
 }

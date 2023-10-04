@@ -1,25 +1,25 @@
 # S2S
+## 概要
+S2Sは、テスト用の骨組みを構築したプロジェクトです。
 
-## ディレクトリ構成
+## ディレクトリ構造
 ```
-./
-|-- src/
-|   |-- controllers/
-|   |   |-- homeController.ts
-|   |   |-- userController.ts
-|   |   |-- ...
-|   |-- models/
-|   |   |-- userModel.ts
-|   |   |-- ...
-|   |-- views/
-|   |   |-- index.ejs
-|   |   |-- user.ejs
-|   |   |-- ...
-|   |-- routes/
-|   |   |-- homeRoutes.ts
-|   |   |-- userRoutes.ts
-|   |   |-- ...
-|   |-- server.ts  (or app.ts)
-|-- package.json
-|-- tsconfig.json
+src/
+├── controllers/ # コントローラーを管理するディレクトリ
+├── middleware/ # ミドルウェア関連のファイルを配置
+├── requests/ # リクエストのバリデーションや処理を管理
+├── routes/ # ルーティングに関するファイルを配置
+├── utils/ # 汎用的なユーティリティやヘルパー関数を配置
+├── views/ # EJSテンプレートなどのビューファイルを配置
+└── server.ts # アプリケーションのエントリーポイント
 ```
+
+## 開発環境
+- Node.js
+- Express
+- TypeScript
+- EJS
+
+## 使い方
+1. 必要なモジュールをインストール: `npm install`
+2. 開発モードでの起動: `npm run dev`
