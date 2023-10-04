@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import session = require('express-session');
 // import { MemoryStore, Session, SessionData, Store } from "express-session";
 import path from 'path';
@@ -8,6 +5,8 @@ import express from 'express';
 // import expressLayouts from 'express-ejs-layouts';
 import webRoutes from './routes/webRoutes';
 import apiRoutes from './routes/apiRoutes';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const appPath = path.resolve(__dirname, process.env.APP_PATH!);
 export const appName = process.env.APP_NAME;
