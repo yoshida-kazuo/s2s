@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import { OpenCvLoader } from "../utils/opencv/openCvLoader";
 
 export const WebRTCPage: React.FC = () => {
@@ -43,7 +44,11 @@ export const WebRTCPage: React.FC = () => {
             let classifier = new cv.CascadeClassifier(),
                 faceCascadeFileUrl = '/static/opencv/facefile',
                 faceCascadeFile = 'haarcascade_frontalface_default.xml',
-                utils = new Utils('errorMessage');
+                // faceCascadeFile = 'haarcascade_mcs_mouth.xml',
+                utils = new Utils('errorMessage'),
+                matSrc = null,
+                matGray = null,
+                matDst = null;
 
             /** yabai */
             try {
@@ -58,36 +63,66 @@ export const WebRTCPage: React.FC = () => {
                 videoRef.current.addEventListener('play', () => {
                     const width = videoRef.current.videoWidth,
                         height = videoRef.current.videoHeight;
+
+                    const context = canvasRef.current.getContext('2d');
                     canvasRef.current.width = width;
                     canvasRef.current.height = height;
 
-                    const context = canvasRef.current.getContext('2d');
-                    const src = new cv.Mat(height, width, cv.CV_8UC4);
-                    const gray = new cv.Mat();
+                    matSrc = new cv.Mat(height, width, cv.CV_8UC4);
+                    matGray = new cv.Mat();
 
                     interval = setInterval(() => {
+                        context?.clearRect(0, 0, width, height);
+
+                        matDst = new cv.Mat(height, width, cv.CV_8UC4, new cv.Scalar(0, 0, 0, 0));
+
+                        context?.clearRect(0, 0, width, height);
                         context?.drawImage(videoRef.current, 0, 0, width, height);
                         const imageData = context?.getImageData(0, 0, width, height);
 
                         if (imageData) {
-                            src.data.set(imageData.data);
-                            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+                            matSrc.data.set(imageData.data);
+                            cv.cvtColor(matSrc, matGray, cv.COLOR_RGBA2GRAY);
 
-                            let faces = new cv.RectVector();
-                            classifier.detectMultiScale(gray, faces);
+                            const faces = new cv.RectVector();
+                            classifier.detectMultiScale(matGray, faces);
+                            // const scaleFactor = 1.3;
+                            // const minNeighbors = 6;
+                            // const minSize = new cv.Size(50, 50);
+                            // // const maxSize = new cv.Size(200, 200);
+                            // // classifier.detectMultiScale(matGray, faces, scaleFactor, minNeighbors, 0, minSize, maxSize);
+                            // classifier.detectMultiScale(
+                            //     matGray,
+                            //     faces,
+                            //     scaleFactor,
+                            //     minNeighbors,
+                            //     0,
+                            //     minSize
+                            // );
 
                             for (let i = 0; i < faces.size(); i++) {
                                 let face = faces.get(i);
-                                context?.strokeRect(face.x, face.y, face.width, face.height);
+
+                                cv.rectangle(
+                                    matDst,
+                                    new cv.Point(face.x, face.y),
+                                    new cv.Point(face.x + face.width, face.y + face.height),
+                                    [255, 0, 0, 255]
+                                );
                             }
+                            cv.imshow(canvasRef.current, matDst);
                         }
-                    }, 100);
+
+                        matDst.delete();
+                    }, 200);
                 });
             });
 
             return () => {
                 if (interval) {
                     clearInterval(interval);
+                    matSrc.delete();
+                    matGray.delete();
                 }
 
                 setVideoReady(false);
@@ -96,10 +131,16 @@ export const WebRTCPage: React.FC = () => {
     }, [isCvLoaded, isVideoReady]);
 
     return (
-        <div>
-            <OpenCvLoader version="4.8.1" onScriptsLoaded={handleOpenCvLoaded} />
-            <video ref={videoRef} autoPlay playsInline></video>
-            <canvas ref={canvasRef}></canvas>
-        </div>
+        <>
+            <div>
+                <h1>Apps</h1>
+                <Link to="/">Go to Home Page</Link>
+            </div>
+            <div className="relative">
+                <OpenCvLoader version="4.8.0" onScriptsLoaded={handleOpenCvLoaded} />
+                <video ref={videoRef} className="absolute top-0 left-0 z-10 -scale-x-100" autoPlay playsInline></video>
+                <canvas ref={canvasRef} className="absolute top-0 left-0 z-20 -scale-x-100"></canvas>
+            </div>
+        </>
     )
 };
