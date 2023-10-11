@@ -7,14 +7,16 @@ export default defineConfig({
     root: 'src/client',
     build: {
         input: 'src/client/main.tsx',
-        outDir: '../../dist'
+        outDir: '../../dist',
+        emptyOutDir: true
     },
     plugins: [react()],
     server: {
         host: true,
         port: process.env.APP_PORT,
         proxy: {
-        '/api': 'http://localhost:' + process.env.APP_PORT_BACKEND
+            '/api': 'http://localhost:' + process.env.APP_PORT_BACKEND,
+            '/static': 'http://localhost:' + process.env.APP_PORT_BACKEND,
         }
     }
 });

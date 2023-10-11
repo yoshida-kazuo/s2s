@@ -1,0 +1,9 @@
+@import './variable.scss';
+@tailwind base;
+@tailwind components;
+
+.custom-class {
+  color: $custom-sass-color;
+}
+
+@tailwind utilities;
