@@ -12,47 +12,6 @@ export const WebRTCPage: React.FC = () => {
     let localStream = useRef<MediaStream|null>(null),
         interval: number | null = null;
 
-    // const initializeOepnCV = (videoElement: HTMLVideoElement) => {
-    //     let classifier = new cv.CascadeClassifier(),
-    //         faceCascadeFile = '/static/opencv/facefile/haarcascade_frontalface_default.xml',
-    //         utils = new Utils('errorMessage'),
-    //         interval: number|null = null;
-
-    //     utils.createFileFromUrl('haarcascade_frontalface_default.xml', faceCascadeFile, () => {
-    //         classifier.load('haarcascade_frontalface_default.xml');
-
-    //         videoElement.addEventListener('play', () => {
-    //             const width = videoElement.videoWidth,
-    //                 height = videoElement.videoHeight;
-    //             canvasRef.current.width = width;
-    //             canvasRef.current.height = height;
-
-    //             const context = canvasRef.current.getContext('2d');
-    //             const src = new cv.Mat(height, width, cv.CV_8UC4);
-    //             const gray = new cv.Mat();
-
-    //             interval = setInterval(() => {
-    //                 context?.drawImage(videoElement, 0, 0, width, height);
-    //                 const imageData = context?.getImageData(0, 0, width, height);
-
-    //                 if (imageData) {
-    //                     src.data.set(imageData.data);
-    //                     cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-
-    //                     let faces = new cv.RectVector();
-    //                     classifier.detectMultiScale(gray, faces);
-
-    //                     for (let i = 0; i < faces.size(); i++) {
-    //                         let face = faces.get(i);
-    //                         context?.strokeRect(face.x, face.y, face.width, face.height);
-    //                     }
-    //                 }
-    //             }, 100);
-    //         });
-    //     });
-    // };
-
-
     useEffect(() => {
         if (isCvLoaded) {
             navigator.mediaDevices
