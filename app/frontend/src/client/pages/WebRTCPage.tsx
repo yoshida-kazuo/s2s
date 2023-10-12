@@ -7,16 +7,18 @@ export const WebRTCPage: React.FC = () => {
         canvasRef = useRef<HTMLCanvasElement>(null),
         [isCvLoaded, setCvLoaded] = useState(false),
         [isVideoReady, setVideoReady] = useState(false),
-        handleOpenCvLoaded = () => {
-            setCvLoaded(true);
-        };
+        handleOpenCvLoaded = () => setCvLoaded(true);
+
     let localStream = useRef<MediaStream|null>(null),
         interval: number | null = null;
 
     useEffect(() => {
         if (isCvLoaded) {
             navigator.mediaDevices
-                .getUserMedia({video: true, audio: true})
+                .getUserMedia({
+                    video: true,
+                    audio: true,
+                })
                 .then((stream) => {
                     localStream = stream;
 
@@ -40,11 +42,10 @@ export const WebRTCPage: React.FC = () => {
     }, [isCvLoaded]);
 
     useEffect(() => {
-        if (isCvLoaded && isVideoReady) {
+        if (isVideoReady) {
             let classifier = new cv.CascadeClassifier(),
                 faceCascadeFileUrl = '/static/opencv/facefile',
                 faceCascadeFile = 'haarcascade_frontalface_default.xml',
-                // faceCascadeFile = 'haarcascade_mcs_mouth.xml',
                 utils = new Utils('errorMessage'),
                 matSrc = null,
                 matGray = null,
@@ -81,7 +82,6 @@ export const WebRTCPage: React.FC = () => {
                             new cv.Scalar(0, 0, 0, 0)
                         );
 
-                        context?.clearRect(0, 0, width, height);
                         context?.drawImage(videoRef.current, 0, 0, width, height);
                         const imageData = context?.getImageData(0, 0, width, height);
 
@@ -89,20 +89,19 @@ export const WebRTCPage: React.FC = () => {
                             matSrc.data.set(imageData.data);
                             cv.cvtColor(matSrc, matGray, cv.COLOR_RGBA2GRAY);
 
-                            const faces = new cv.RectVector();
-                            // classifier.detectMultiScale(matGray, faces);
-                            const scaleFactor = 1.3;
-                            const minNeighbors = 6;
-                            const minSize = new cv.Size(50, 50);
-                            // const maxSize = new cv.Size(200, 200);
-                            // classifier.detectMultiScale(matGray, faces, scaleFactor, minNeighbors, 0, minSize, maxSize);
+                            const faces = new cv.RectVector(),
+                                scaleFactor = 1.3,
+                                minNeighbors = 6,
+                                minSize = new cv.Size(50, 50),
+                                maxSize = new cv.Size(200, 200);
                             classifier.detectMultiScale(
                                 matGray,
                                 faces,
                                 scaleFactor,
                                 minNeighbors,
                                 0,
-                                minSize
+                                minSize,
+                                maxSize
                             );
 
                             for (let i = 0; i < faces.size(); i++) {
@@ -117,10 +116,10 @@ export const WebRTCPage: React.FC = () => {
                             }
                             cv.imshow(canvasRef.current, matDst);
                         }
-
-                        // matDst.delete();
                     }, 200);
                 });
+
+                videoRef.current.play();
             });
 
             return () => {
@@ -134,7 +133,7 @@ export const WebRTCPage: React.FC = () => {
                 setVideoReady(false);
             }
         }
-    }, [isCvLoaded, isVideoReady]);
+    }, [isVideoReady]);
 
     return (
         <>
@@ -144,7 +143,7 @@ export const WebRTCPage: React.FC = () => {
             </div>
             <div className="relative">
                 <OpenCvLoader version="4.8.0" onScriptsLoaded={handleOpenCvLoaded} />
-                <video ref={videoRef} className="absolute top-0 left-0 z-10 -scale-x-100" autoPlay playsInline></video>
+                <video ref={videoRef} className="absolute top-0 left-0 z-10 -scale-x-100" playsInline></video>
                 <canvas ref={canvasRef} className="absolute top-0 left-0 z-20 -scale-x-100"></canvas>
             </div>
         </>
