@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { BaseController } from './BaseController';
-import { HomeRequest } from '../requests/HomeRequest';
+import { BaseController } from '../BaseController';
+import { HomeRequest } from '../../requests/HomeRequest';
 
 export class HomeController extends BaseController {
     protected requestClass = HomeRequest;

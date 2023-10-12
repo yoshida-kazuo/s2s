@@ -74,7 +74,12 @@ export const WebRTCPage: React.FC = () => {
                     interval = setInterval(() => {
                         context?.clearRect(0, 0, width, height);
 
-                        matDst = new cv.Mat(height, width, cv.CV_8UC4, new cv.Scalar(0, 0, 0, 0));
+                        matDst = new cv.Mat(
+                            height,
+                            width,
+                            cv.CV_8UC4,
+                            new cv.Scalar(0, 0, 0, 0)
+                        );
 
                         context?.clearRect(0, 0, width, height);
                         context?.drawImage(videoRef.current, 0, 0, width, height);
@@ -85,20 +90,20 @@ export const WebRTCPage: React.FC = () => {
                             cv.cvtColor(matSrc, matGray, cv.COLOR_RGBA2GRAY);
 
                             const faces = new cv.RectVector();
-                            classifier.detectMultiScale(matGray, faces);
-                            // const scaleFactor = 1.3;
-                            // const minNeighbors = 6;
-                            // const minSize = new cv.Size(50, 50);
-                            // // const maxSize = new cv.Size(200, 200);
-                            // // classifier.detectMultiScale(matGray, faces, scaleFactor, minNeighbors, 0, minSize, maxSize);
-                            // classifier.detectMultiScale(
-                            //     matGray,
-                            //     faces,
-                            //     scaleFactor,
-                            //     minNeighbors,
-                            //     0,
-                            //     minSize
-                            // );
+                            // classifier.detectMultiScale(matGray, faces);
+                            const scaleFactor = 1.3;
+                            const minNeighbors = 6;
+                            const minSize = new cv.Size(50, 50);
+                            // const maxSize = new cv.Size(200, 200);
+                            // classifier.detectMultiScale(matGray, faces, scaleFactor, minNeighbors, 0, minSize, maxSize);
+                            classifier.detectMultiScale(
+                                matGray,
+                                faces,
+                                scaleFactor,
+                                minNeighbors,
+                                0,
+                                minSize
+                            );
 
                             for (let i = 0; i < faces.size(); i++) {
                                 let face = faces.get(i);
@@ -113,7 +118,7 @@ export const WebRTCPage: React.FC = () => {
                             cv.imshow(canvasRef.current, matDst);
                         }
 
-                        matDst.delete();
+                        // matDst.delete();
                     }, 200);
                 });
             });
@@ -123,6 +128,7 @@ export const WebRTCPage: React.FC = () => {
                     clearInterval(interval);
                     matSrc.delete();
                     matGray.delete();
+                    matDst.delete();
                 }
 
                 setVideoReady(false);

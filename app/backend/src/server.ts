@@ -5,15 +5,15 @@ import express from 'express';
 import expressLayouts from 'express-ejs-layouts';
 import webRoutes from './routes/webRoutes';
 import apiRoutes from './routes/apiRoutes';
+import ioRoutes from './routes/ioRoutes';
+import { Server } from 'socket.io';
+import http from 'http';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const appPath = path.resolve(__dirname, process.env.APP_PATH!);
-export const appName = process.env.APP_NAME;
-export const appUrl = process.env.APP_URL;
-export const appPort = process.env.APP_PORT;
-
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 declare module "express-session" {
     interface SessionData {
@@ -33,8 +33,12 @@ app.use(expressLayouts)
 app.set('layout', 'layouts/default')
     .set('view engine', 'ejs')
     .set('views', path.join(__dirname, 'views'));
-app.use('/static', express.static(__dirname + '/public'))
-    .use('/api', apiRoutes);
-app.listen(appPort, () => {
-        console.log(`Server is running at ${appUrl}:${appPort}`);
-    });
+app.use('/', webRoutes)
+    .use('/api', apiRoutes)
+    .use('/static', express.static(__dirname + '/public'));
+
+io.on('connection', ioRoutes);
+
+server.listen(process.env.APP_PORT, () => {
+    console.log(`Server is running on port ${process.env.APP_PORT}`);
+});
